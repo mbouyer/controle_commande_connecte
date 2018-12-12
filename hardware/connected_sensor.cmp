@@ -1,0 +1,323 @@
+Cmp-Mod V01 Created by PcbNew   date = 11 décembre 2018 17:30:37 MET
+
+BeginCmp
+TimeStamp = 5C16E830
+Path = 
+Reference = REF**;
+ValeurCmp = MountingHole_3.2mm_M3;
+IdModule  = Mounting_Holes:MountingHole_3.2mm_M3;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C16E828
+Path = 
+Reference = REF**;
+ValeurCmp = MountingHole_3.2mm_M3;
+IdModule  = Mounting_Holes:MountingHole_3.2mm_M3;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000890
+Path = /5BD81967
+Reference = C1;
+ValeurCmp = 100nF;
+IdModule  = Capacitors_SMD:C_0603_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000896
+Path = /5BD043F6
+Reference = C2;
+ValeurCmp = 100nF;
+IdModule  = Capacitors_SMD:C_0603_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C00089C
+Path = /5BD87F7D
+Reference = C3;
+ValeurCmp = 100nF;
+IdModule  = Capacitors_SMD:C_0603_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008A2
+Path = /5BCF7E03
+Reference = C4;
+ValeurCmp = 100nF;
+IdModule  = Capacitors_SMD:C_0603_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008A8
+Path = /5BDCFE68
+Reference = C5;
+ValeurCmp = 1µ;
+IdModule  = Capacitors_SMD:C_0805_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008AE
+Path = /5BDD250E
+Reference = C6;
+ValeurCmp = 1µ;
+IdModule  = Capacitors_SMD:C_0805_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008B4
+Path = /5BCE8142
+Reference = D1;
+ValeurCmp = 1N4004;
+IdModule  = Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008BC
+Path = /5BD69704
+Reference = J1;
+ValeurCmp = Conn_01x04;
+IdModule  = Connectors_Phoenix:PhoenixContact_MCV-G_04x3.50mm_Vertical;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008C4
+Path = /5BD6A6CC
+Reference = J2;
+ValeurCmp = Conn_01x04;
+IdModule  = Connectors_Phoenix:PhoenixContact_MCV-G_04x3.50mm_Vertical;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008CD
+Path = /5BD53C80
+Reference = J3;
+ValeurCmp = Conn_01x05;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x05_Pitch2.54mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008D6
+Path = /5BE22569
+Reference = J4;
+ValeurCmp = Conn_01x05;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x05_Pitch2.54mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008DD
+Path = /5BCE5500
+Reference = J5;
+ValeurCmp = Conn_01x03;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008E3
+Path = /5BCEED9D
+Reference = J6;
+ValeurCmp = AC_IN;
+IdModule  = Connectors_Phoenix:PhoenixContact_MCV-G_02x5.08mm_Vertical;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008E9
+Path = /5BCEF216
+Reference = J7;
+ValeurCmp = LOAD;
+IdModule  = Connectors_Phoenix:PhoenixContact_MCV-G_02x5.08mm_Vertical;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0008F7
+Path = /5BCE0CD8
+Reference = J8;
+ValeurCmp = UEXT;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x05_Pitch2.54mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000901
+Path = /5BCE7397
+Reference = K1;
+ValeurCmp = G2RL-1A-E 5DC ;
+IdModule  = Relays_THT:Relay_SPST_Schrack-RT1-16A-FormA_RM5mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C00091F
+Path = /5BCDF2A3
+Reference = M1;
+ValeurCmp = ESP8266-DEV;
+IdModule  = local:ESP8266-DEV;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000926
+Path = /5BCE9635
+Reference = Q1;
+ValeurCmp = ZXMN3A01FTA ;
+IdModule  = TO_SOT_Packages_SMD:SOT-23;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C00092C
+Path = /5BD01774
+Reference = R1;
+ValeurCmp = 10K;
+IdModule  = Resistors_SMD:R_1210_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000932
+Path = /5BD97A4B
+Reference = R2;
+ValeurCmp = 5.6K;
+IdModule  = Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000938
+Path = /5BD986E5
+Reference = R3;
+ValeurCmp = 100K;
+IdModule  = Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000956
+Path = /5BCEA562
+Reference = R8;
+ValeurCmp = 10K;
+IdModule  = Resistors_SMD:R_1210_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C00095C
+Path = /5BD1B4DA
+Reference = R9;
+ValeurCmp = 4.7k;
+IdModule  = Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000962
+Path = /5BD1AC20
+Reference = R10;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_1210_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000968
+Path = /5BD19B61
+Reference = R11;
+ValeurCmp = 18;
+IdModule  = Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C00096E
+Path = /5BCE1F86
+Reference = R12;
+ValeurCmp = NA;
+IdModule  = Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000974
+Path = /5BCE1BE4
+Reference = R13;
+ValeurCmp = 2.2K;
+IdModule  = Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C00097C
+Path = /5BD1482F
+Reference = T1;
+ValeurCmp = Transformer_1P_1S;
+IdModule  = local:CSE187-LP;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000986
+Path = /5BD7E5D2
+Reference = U1;
+ValeurCmp = MAX4460ESA;
+IdModule  = TO_SOT_Packages_SMD:SOT-23-6;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0009A6
+Path = /5BCF46C6
+Reference = U2;
+ValeurCmp = PIC18F25Q10;
+IdModule  = Housings_DIP:DIP-28_W7.62mm_LongPads;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0009AF
+Path = /5BDB94A6
+Reference = U3;
+ValeurCmp = IRM-03-5;
+IdModule  = local:ACDC-Conv_THTMeanWell-IRM-03-XX;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0009B8
+Path = /5BDA7230
+Reference = U4;
+ValeurCmp = MIC5504-3.3;
+IdModule  = TO_SOT_Packages_SMD:SOT-23-5;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000944
+Path = /5BE464B0
+Reference = R5;
+ValeurCmp = 10K;
+IdModule  = Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C00093E
+Path = /5BE46537
+Reference = R4;
+ValeurCmp = 10K;
+IdModule  = Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C00094A
+Path = /5BE45D58
+Reference = R6;
+ValeurCmp = 10K;
+IdModule  = Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C000950
+Path = /5BE4337C
+Reference = R7;
+ValeurCmp = 10K;
+IdModule  = Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C16E812
+Path = 
+Reference = REF**;
+ValeurCmp = MountingHole_3.2mm_M3;
+IdModule  = Mounting_Holes:MountingHole_3.2mm_M3;
+EndCmp
+
+BeginCmp
+TimeStamp = 5C0FE3F6
+Path = /5C0FE343
+Reference = R14;
+ValeurCmp = 47K;
+IdModule  = Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal;
+EndCmp
+
+EndListe
