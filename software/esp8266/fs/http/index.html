@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
+        <title>aperosafe</title>
+	<link rel="stylesheet" type="text/css" href="/as.css" />
+  </head>
+  <body>
+  <div>
+        <h1>ApéroSafe</h1>
+        <p>
+	  <span id="press-label">pression:</span> <span id="press-value">%PRESS%</span><span id="press-unit">b</span>
+          <span id="cons-label">consigne:</span> <span id="cons-value">%CONS%</span><span id="cons-unit">b</span>
+	</p>
+        <p>
+	  <span id="int-label">intensité:</span> <span id="int-value">%AMPS%</span><span id="int-unit">A</span>
+	</p>
+    <form action="/stop" method="post">
+      <div>
+        <input type='submit' name='RELAY' value='Arret'/>
+      </div>
+    </form>
+  </div>
+  </body>
+</html>
