@@ -18,9 +18,8 @@ un relais.
 
 * un microchip pic18f25q10,
   auquel sont connectés les capteurs de température et de courant,
-  aunsi que les 4 interrupteurs
+  aunsi que les 4 interrupteurs et le relais
 * un module ESP8266, qui commandera l'affichage et contient un module
   wifi.
 
-Le relais peut être commandé par l'un ou l'autre microcontrolleur.
 Les deux microcontrolleurs communiquent par un bus i2c et une GPIO.
