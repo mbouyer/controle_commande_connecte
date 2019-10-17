@@ -128,8 +128,30 @@ toStringIp(IPAddress ip) {
 	return res;
 }
 
+static String
+getContentType(String filename) {
+	if(filename.endsWith(".html")) return "text/html";
+	else if(filename.endsWith(".css")) return "text/css";
+	else if(filename.endsWith(".js")) return "application/javascript";
+	else if(filename.endsWith(".png")) return "image/png";
+	else if(filename.endsWith(".gif")) return "image/gif";
+	else if(filename.endsWith(".jpg")) return "image/jpeg";
+	else if(filename.endsWith(".ico")) return "image/x-icon";
+	else if(filename.endsWith(".xml")) return "text/xml";
+	return "text/plain";
+}
+
+
+
 static void
-handleNotFound(AsyncWebServerRequest *request) {
+handleNotFound(AsyncWebServerRequest *request)
+{
+	String filename = "/http" + request->url();
+
+	if(SPIFFS.exists(filename)) {
+		request->send(SPIFFS, filename, getContentType(filename));
+		return;
+	}
 	Serial.print("request for http://");
 	Serial.print(request->host());
 	Serial.println(request->url());
@@ -247,14 +269,18 @@ setup() {
 		  request->send(SPIFFS, "/http/index.html", String(), false, fill_html);
 		  });
 			  
-		// Route to load style.css file
-		server.on("/as.css", HTTP_GET, [](AsyncWebServerRequest *request){
-		  request->send(SPIFFS, "/http/as.css", "text/css");
-		  });
+		// handle stop request
 		server.on("/stop", HTTP_POST, [](AsyncWebServerRequest *request){
 		  do_motor(0);
 		  request->redirect(String("http://") + toStringIp(local_IP));
 		  });
+		// get plain sensors values
+		server.on("/sensors", HTTP_GET, [](AsyncWebServerRequest *request){
+		    char buf[80];
+		    sprintf(buf, "%3d:%3d:%2d.%d:%d:", press*2,
+			target_press*2, current / 10, current % 10, motor_on);
+		    request->send(200, "text/plain", buf);
+		});
 
 		server.onNotFound(handleNotFound);
 		server.begin();

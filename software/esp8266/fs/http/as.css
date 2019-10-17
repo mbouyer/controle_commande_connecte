@@ -3,3 +3,33 @@ body {
 	font-family: Arial, Helvetica, Sans-Serif;
 	Color: #000088;
 }
+
+#spin {
+	vertical-align: middle;
+}
+
+#arret {
+	background-color: #ff4040;
+	border-radius: 20%;
+	padding: 1em 1em;
+}
+
+#arret:disabled {
+	background-color: #404040;
+	cursor: not-allowed;
+}
+
+@media screen and (min-resolution: 120dpi) {
+	h1 {
+	  font-size: 18vmin;
+	  padding: 10px;
+	}
+	div, p, input {
+	  font-size: 6vmin;
+	  padding: 10px;
+	}
+	#spin {
+		vertical-align: middle;
+		width: 20%;
+	}
+}

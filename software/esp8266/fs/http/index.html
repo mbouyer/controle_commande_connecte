@@ -4,8 +4,32 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
         <title>aperosafe</title>
 	<link rel="stylesheet" type="text/css" href="/as.css" />
+	<script src="/spin.js"></script>
   </head>
   <body>
+  <script>
+    setInterval(function ( ) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+	    if (this.readyState == 4 && this.status == 200) {
+		var txt=this.responseText;
+		var res=txt.split(":");
+		document.getElementById("press-value").innerHTML = res[0];
+		document.getElementById("cons-value").innerHTML = res[1];
+		document.getElementById("int-value").innerHTML = res[2];
+		if (res[3] === "1") {
+		    rotateActive(1);
+		    document.getElementById("arret").disabled = false;
+		} else {
+		    rotateActive(0);
+		    document.getElementById("arret").disabled = true;
+		}
+	    }
+	};
+	xhttp.open("GET", "/sensors", true);
+	xhttp.send();
+    }, 500) ;
+  </script>
   <div>
         <h1>ApéroSafe</h1>
         <p>
@@ -17,8 +41,10 @@
 	</p>
     <form action="/stop" method="post">
       <div>
-        <input type='submit' name='RELAY' value='Arret'/>
+	<span id="spinner"><img id="spin" src="/spin_32.png"></span><!-- use http://getdrawings.com/free-icon-bw/car-wheel-icon-8.png --!>
+        <span><input id="arret" type='submit' name='RELAY' value='Arret'/></span>
       </div>
+      <script>rotateAnimation("spin",15);</script>
     </form>
   </div>
   </body>
