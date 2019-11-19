@@ -4,6 +4,19 @@ body {
 	Color: #000088;
 }
 
+h1, h2, p {
+	margin:0;
+	padding:0;
+}
+
+#eta-label {
+	margin-left: 2ex;
+}
+
+#cons-label {
+	margin-left: 2ex;
+}
+
 #spin {
 	vertical-align: middle;
 }
@@ -19,6 +32,22 @@ body {
 	cursor: not-allowed;
 }
 
+#wifi-img {
+	vertical-align: middle;
+	width: 3ex;
+}
+
+#content {
+	display: -webkit-flex;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+#content > div {
+	margin: 10px;
+}
+
 @media screen and (min-resolution: 120dpi) {
 	h1 {
 	  font-size: 18vmin;
@@ -30,6 +59,10 @@ body {
 	}
 	#spin {
 		vertical-align: middle;
-		width: 20%;
+		width: 6ex;
+	}
+	#wifi-img {
+		vertical-align: middle;
+		width: 3ex;
 	}
 }

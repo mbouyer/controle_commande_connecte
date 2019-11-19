@@ -4,7 +4,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
         <title>aperosafe</title>
 	<link rel="stylesheet" type="text/css" href="/as.css" />
-	<script src="/spin.js"></script>
   </head>
   <body>
   <script>
@@ -17,11 +16,14 @@
 		document.getElementById("press-value").innerHTML = res[0];
 		document.getElementById("cons-value").innerHTML = res[1];
 		document.getElementById("int-value").innerHTML = res[2];
+		document.getElementById("ch-value").innerHTML = res[4];
+		document.getElementById("eta-value").innerHTML = res[5];
+		document.getElementById("wifi-value").innerHTML = res[6];
 		if (res[3] === "1") {
-		    rotateActive(1);
+		    document.getElementById("spin").src = "acheval.gif";
 		    document.getElementById("arret").disabled = false;
 		} else {
-		    rotateActive(0);
+		    document.getElementById("spin").src = "acheval-stop.gif";
 		    document.getElementById("arret").disabled = true;
 		}
 	    }
@@ -30,22 +32,32 @@
 	xhttp.send();
     }, 500) ;
   </script>
-  <div>
-        <h1>ApéroSafe</h1>
-        <p>
-	  <span id="press-label">pression:</span> <span id="press-value">%PRESS%</span><span id="press-unit">b</span>
-          <span id="cons-label">consigne:</span> <span id="cons-value">%CONS%</span><span id="cons-unit">b</span>
-	</p>
-        <p>
-	  <span id="int-label">intensité:</span> <span id="int-value">%AMPS%</span><span id="int-unit">A</span>
-	</p>
-    <form action="/stop" method="post">
-      <div>
-	<span id="spinner"><img id="spin" src="/spin_32.png"></span><!-- use http://getdrawings.com/free-icon-bw/car-wheel-icon-8.png --!>
-        <span><input id="arret" type='submit' name='RELAY' value='Arret'/></span>
-      </div>
-      <script>rotateAnimation("spin",15);</script>
-    </form>
-  </div>
+    <h1>ApéroSafe</h1>
+    <div id="content">
+	<div id="values">
+          <p>
+	    <span id="press-label">pression:</span> <span id="press-value">%PRESS%</span><span id="press-unit">b</span>
+            <span id="cons-label">consigne:</span> <span id="cons-value">%CONS%</span><span id="cons-unit">b</span>
+	  </p>
+          <p>
+	    <span id="int-label">intensité:</span> <span id="int-value">%AMPS%</span><span id="int-unit">A</span>
+	    <span id="eta-label">ETA:</span> <span id="eta-value">--</span>
+	  </p>
+          <p>
+	    <span id="ch-label">horamètre:</span> <span id="ch-value"></span>
+	</div>
+	<div id="button">
+          <form action="/stop" method="post">
+            <div>
+	      <span id="spinner"><img id="spin" src="acheval.gif"></span>
+              <span><input id="arret" type='submit' name='RELAY' value='Arret'/></span>
+            </div>
+          </form>
+	</div>
+        <div>
+	  <span id="wifi-label"><img id="wifi-img" src="/wifi.png"></span>
+	  <span id="wifi-value"></span>
+        </div>
+    </div>
   </body>
 </html>

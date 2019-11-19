@@ -31,6 +31,7 @@
 #include <LCD_3310.h>
 #include <Wire.h>
 #include <FS.h>
+#include <ESP_EEPROM.h>
 #include "../pic_controle/i2c.h"
 
 #define SDA_PIN 2
@@ -38,7 +39,14 @@
 #define DATA_READY  16
 
 #define VERSIONM 0
-#define VERSIONm 1
+#define VERSIONm 2
+
+#define EEPROM_VERSION 0x01
+#define EEPROM_SIZE 16 // overkill but minimum is 16
+
+unsigned short runtime;
+unsigned int milliruntime;
+unsigned long runtime_last;
 
 #define DISP_UPDATE 500 //ms
 unsigned long disp_up_last = 0;
@@ -51,6 +59,14 @@ unsigned char press;
 unsigned char target_press = 115;
 unsigned int current;
 
+// ETA compute
+#define ETA_SAMPLES 5
+unsigned char previous_press[ETA_SAMPLES];
+unsigned long eta_millis;
+short etatime;
+
+
+// buttons
 unsigned char buttons_state;
 unsigned long plusminus_timer;
 #define PLUSMINUS_SLOW 1000 // 1s
@@ -118,6 +134,23 @@ do_motor(bool m)
 	}
 }
 
+static void
+time2str(char *buf, int time) {
+	sprintf(buf, "%dh%02d", time / 60, time % 60);
+}
+
+static void
+etatime2str(char *buf) {
+	if (etatime == 0) {
+	    sprintf(buf, "----");
+	} else if (etatime >= 60 * 10) {
+	    sprintf(buf, "++++");
+	} else {
+	    time2str(buf, etatime);
+	}
+}
+
+
 static String
 toStringIp(IPAddress ip) {
 	String res = "";
@@ -181,6 +214,7 @@ setup() {
 	char v[2];
 	char buf[80];
 	int ret, i;
+	char ee_version;
 
 	delay(1000);
 	Serial.begin(57600);
@@ -233,6 +267,39 @@ setup() {
 	sprintf(buf, "pic %d.%d", v[0], v[1]);
 	LCDStr(5, 3, buf, 0, 5); 
 	Serial.println(buf);
+
+	EEPROM.begin(EEPROM_SIZE);
+	EEPROM.get(0, ee_version);
+	if (ee_version != EEPROM_VERSION) {
+		sprintf(buf, "bad eeprom %d", ee_version);
+		LCDStr(0, 4, buf, 1, 5); 
+		Serial.println(buf);
+		ee_version = EEPROM_VERSION;
+		EEPROM.put(0, ee_version);
+		runtime = 0;
+		EEPROM.put(1, runtime);
+		while (!digitalRead(DATA_READY)) {
+			delay(100);
+		}
+		if (!EEPROM.commit()) {
+			sprintf(buf, "ee commit fail");
+			LCDStr(0, 4, buf, 1, 5); 
+			Serial.println(buf);
+			while (!digitalRead(DATA_READY)) {
+				delay(100);
+			}
+		}
+	} else {
+		sprintf(buf, "eeprom version %d, runtime ", ee_version);
+		Serial.print(buf);
+		EEPROM.get(1, runtime);
+		time2str(buf, runtime * 10);
+		LCDStr(5, 4, buf, 0, 5); 
+		Serial.println(buf);
+	}
+	milliruntime = 0;
+	etatime = 0;
+
 	// wait 10s, unless key press
 	for (i = 0; i < 100; i++) {
 		if (digitalRead(DATA_READY))
@@ -277,8 +344,14 @@ setup() {
 		// get plain sensors values
 		server.on("/sensors", HTTP_GET, [](AsyncWebServerRequest *request){
 		    char buf[80];
-		    sprintf(buf, "%3d:%3d:%2d.%d:%d:", press*2,
-			target_press*2, current / 10, current % 10, motor_on);
+		    char buf_horam[10];
+		    char buf_eta[10];
+
+		    time2str(buf_horam, runtime * 10);
+		    etatime2str(buf_eta);
+		    sprintf(buf, "%3d:%3d:%2d.%d:%d:%s:%s:%d:", press*2,
+			target_press*2, current / 10, current % 10, motor_on,
+			buf_horam, buf_eta, WiFi.softAPgetStationNum());
 		    request->send(200, "text/plain", buf);
 		});
 
@@ -298,11 +371,9 @@ void loop() {
 	bool do_disp_up = 0;
 	bool do_press_inv = 0;
 	unsigned long bt_time;
+	int i;
 
 	dnsServer.processNextRequest();
-
-	sprintf(buf, "%d", WiFi.softAPgetStationNum());
-	LCDStr(0, 0, buf, 0, 5);
 
 #define MY_AMP    0
 #define MY_PRES    (I2C_R_PRES - I2C_R_AMP)
@@ -319,14 +390,28 @@ void loop() {
 		sprintf(buf, "buttons %x", buttons);
 		Serial.println(buf);
 		if (buttons & I2C_BUTTONS_STOP) {
-			if (motor_on && !(buttons_state & I2C_BUTTONS_STOP))
+			if (motor_on && !(buttons_state & I2C_BUTTONS_STOP)) {
 				do_motor(0);
+				do_disp_up = 1;
+				LCDClear();
+				LCDUpdate();
+				etatime = 0;
+			}
 		} else if (!motor_on && (buttons & I2C_BUTTONS_START) &&
 		    !(buttons_state & I2C_BUTTONS_START)) {
-			if (press < target_press)
+			if (press < target_press) {
 				do_motor(1);
-			else
+				do_disp_up = 1;
+				eta_millis = runtime_last = millis();
+				previous_press[0] = press;
+				for (i = 1; i < ETA_SAMPLES; i++)
+					previous_press[i] = 0xff;
+				etatime = 0;
+				LCDClear();
+				LCDUpdate();
+			} else {
 				do_press_inv = do_disp_up = 1;
+			}
 		}
 		if ((buttons & (I2C_BUTTONS_PLUS | I2C_BUTTONS_MINUS)) !=
 		    (I2C_BUTTONS_PLUS | I2C_BUTTONS_MINUS)) {
@@ -381,6 +466,10 @@ void loop() {
 	}
 
 	if (millis() - disp_up_last > DISP_UPDATE || do_disp_up) {
+
+		sprintf(buf, "%d", WiFi.softAPgetStationNum());
+		LCDStr(0, 0, buf, 0, 5);
+
 		if ((ret = i2c_read(I2C_R_AMP, v, (MY_PRES + 1))) != (MY_PRES + 1)) {
 			LCDClear();
 			sprintf(buf, "read pic %d", ret);
@@ -404,9 +493,50 @@ void loop() {
 		LCDStr(42, 1, buf, do_press_inv, 10); 
 		Serial.println(buf);
 
-		sprintf(buf, "%2d.%dA", current / 10, current % 10);
-		LCDStr(5, 5, buf, 0, 5); 
-		Serial.println(buf);
+		if (motor_on) {
+			int old_milliruntime = milliruntime;
+			sprintf(buf, "%2d.%dA", current / 10, current % 10);
+			LCDStr(5, 5, buf, 0, 5); 
+			Serial.println(buf);
+			milliruntime += (millis() - runtime_last);
+			runtime_last = millis();
+			/* update runtime every 10mn, with proper rounding */
+			if (old_milliruntime < 300000 && 
+			    milliruntime > 300000) {
+				runtime += 1;
+				EEPROM.put(1, runtime);
+				EEPROM.commit();
+			} else if (milliruntime > 600000) {
+				milliruntime -= 600000;
+			}
+
+			if ((millis() - eta_millis) >= 60000) {
+				eta_millis = millis();
+				/* find first valid sample */
+				for (i = ETA_SAMPLES - 1; i >= 0; i--) {
+					if (previous_press[i] != 0xff)
+						break;
+				}
+				char delta_xs = (previous_press[i] - press);
+				if (delta_xs <= 0) {
+					etatime = 32767;
+				} else {
+					float barspermin = 
+					    (float)delta_xs / ((float)i + 1);
+					etatime = (float)(target_press - press) / barspermin + 0.5;
+				}
+				for (i = ETA_SAMPLES - 1; i > 0; i--) {
+					previous_press[i] = previous_press[i-1];
+				}
+				previous_press[0] = press;
+
+			}
+			etatime2str(buf);
+			LCDStr(40, 3, buf, 0, 10);
+		} else {
+			time2str(buf, runtime * 10);
+			LCDStr(5, 5, buf, 0, 5);
+		}
 		disp_up_last = millis();
 	}
 }
