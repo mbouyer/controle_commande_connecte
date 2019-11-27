@@ -39,7 +39,7 @@
 #define DATA_READY  16
 
 #define VERSIONM 0
-#define VERSIONm 2
+#define VERSIONm 3
 
 #define EEPROM_VERSION 0x01
 #define EEPROM_SIZE 16 // overkill but minimum is 16
@@ -517,7 +517,7 @@ void loop() {
 					if (previous_press[i] != 0xff)
 						break;
 				}
-				char delta_xs = (previous_press[i] - press);
+				char delta_xs = (press - previous_press[i]);
 				if (delta_xs <= 0) {
 					etatime = 32767;
 				} else {
