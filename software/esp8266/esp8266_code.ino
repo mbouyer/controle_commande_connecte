@@ -33,6 +33,7 @@
 #include <FS.h>
 #include <ESP_EEPROM.h>
 #include "../pic_controle/i2c.h"
+#include "wifi_params.h"
 
 #define SDA_PIN 2
 #define SCL_PIN 4
@@ -220,7 +221,7 @@ setup() {
 	Serial.begin(57600);
 	Serial.println();
 	Serial.println("Configuring access point...");
-	WiFi.softAP("interface de controle", "Projet_SESI",1,false,8);
+	WiFi.softAP(WIFI_SSID, WIFI_PASS, 1, false, 8);
 	WiFi.softAPConfig(local_IP, local_IP, subnet);
 
 	Serial.print("AP IP address: ");
