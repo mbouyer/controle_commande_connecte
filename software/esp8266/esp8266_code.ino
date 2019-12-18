@@ -505,9 +505,6 @@ void loop() {
 
 	if (millis() - disp_up_last > DISP_UPDATE || do_disp_up) {
 
-		sprintf(buf, "%d", WiFi.softAPgetStationNum());
-		LCDStr(0, 0, buf, 0, 5);
-
 #ifndef NO_PIC
 		if ((ret = i2c_read(I2C_R_AMP, v, (MY_PRES + 1))) != (MY_PRES + 1)) {
 			LCDClear();
@@ -523,7 +520,12 @@ void loop() {
 
 		if (press >= target_press) {
 			do_motor(0);
+			LCDClear();
+			LCDUpdate();
 		}
+
+		sprintf(buf, "%d", WiFi.softAPgetStationNum());
+		LCDStr(0, 0, buf, 0, 5);
 
 		sprintf(buf, "%3d", press * 2);
 		LCDStr(0, 1, buf, do_press_inv, 10); 
