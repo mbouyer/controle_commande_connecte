@@ -45,6 +45,14 @@
 #define EEPROM_VERSION 0x01
 #define EEPROM_SIZE 16 // overkill but minimum is 16
 
+// #define NO_PIC 1 // emulation mode
+
+#ifdef NO_PIC
+unsigned long no_pic_emultime = 0;
+#define NO_PIC_UPDATE 20000 // 20s
+float no_pic_press;
+#endif
+
 unsigned short runtime;
 unsigned int milliruntime;
 unsigned long runtime_last;
@@ -126,6 +134,7 @@ do_motor(bool m)
 	if (motor_on)
 		flags |= I2C_FLAGS_MOTOR;
 
+#ifndef NO_PIC
 	while ((ret = i2c_write(I2C_W_FLAGS, flags)) != 0) {
 		LCDClear();
 		sprintf(buf, "write pic %d", ret);
@@ -133,6 +142,7 @@ do_motor(bool m)
 		LCDStr(5, 2, buf, 0, 5); 
 		delay(500);
 	}
+#endif
 }
 
 static void
@@ -245,6 +255,7 @@ setup() {
 	sprintf(buf, "aperosafe %d.%d", VERSIONM, VERSIONm);
 	Serial.println("wait on PIC");
 	LCDStr(5, 2, "wait on pic", 0, 5);
+#ifndef NO_PIC
 	while ((ret = i2c_read(I2C_R_VERSM, v, 2)) != 2) {
 		sprintf(buf, "wait on pic %d", ret);
 		Serial.println(buf);
@@ -258,6 +269,7 @@ setup() {
 			delay(500);
 		}
 	}
+#endif
 	LCDClear();
 	LCDUpdate();
 	LCDStr(0, 1, "aperosafe", 0, 5); 
@@ -379,6 +391,30 @@ void loop() {
 #define MY_AMP    0
 #define MY_PRES    (I2C_R_PRES - I2C_R_AMP)
 
+#ifdef NO_PIC
+	if ((millis() - no_pic_emultime) > NO_PIC_UPDATE) {
+		no_pic_emultime = millis();
+		buttons_state = 0;
+		if (press < target_press) {
+			if (!motor_on) {
+				no_pic_press = 10;
+				do_motor(1);
+				do_disp_up = 1;
+				eta_millis = runtime_last = millis();
+				previous_press[0] = press;
+				for (i = 1; i < ETA_SAMPLES; i++)
+					previous_press[i] = 0xff;
+				etatime = 0;
+				LCDClear();
+				LCDUpdate();
+			} else {
+				no_pic_press += (target_press - no_pic_press) * (NO_PIC_UPDATE / 1000) / 3600.0;
+				press = no_pic_press;
+				current = 98;
+			}
+		}
+	}
+#else // NO_PIC
 	if (digitalRead(DATA_READY)) {
 		if ((ret = i2c_read(I2C_R_BUTTONS, &buttons, 1)) != 1) {
 			LCDClear();
@@ -434,6 +470,7 @@ void loop() {
 		}
 		buttons_state = buttons;
 	}
+#endif // NO_PIC
 	if ((buttons_state & (I2C_BUTTONS_PLUS | I2C_BUTTONS_MINUS)) != 0 &&
 	    (buttons_state & (I2C_BUTTONS_PLUS | I2C_BUTTONS_MINUS)) !=
 	    (I2C_BUTTONS_PLUS | I2C_BUTTONS_MINUS)) {
@@ -471,6 +508,7 @@ void loop() {
 		sprintf(buf, "%d", WiFi.softAPgetStationNum());
 		LCDStr(0, 0, buf, 0, 5);
 
+#ifndef NO_PIC
 		if ((ret = i2c_read(I2C_R_AMP, v, (MY_PRES + 1))) != (MY_PRES + 1)) {
 			LCDClear();
 			sprintf(buf, "read pic %d", ret);
@@ -481,6 +519,7 @@ void loop() {
 		}
 		press = v[MY_PRES];
 		current = v[MY_AMP];
+#endif
 
 		if (press >= target_press) {
 			do_motor(0);
@@ -518,13 +557,13 @@ void loop() {
 					if (previous_press[i] != 0xff)
 						break;
 				}
-				char delta_xs = (press - previous_press[i]);
+				int delta_xs = ((int)press - (int)previous_press[i]);
 				if (delta_xs <= 0) {
 					etatime = 32767;
 				} else {
 					float barspermin = 
 					    (float)delta_xs / ((float)i + 1);
-					etatime = (float)(target_press - press) / barspermin + 0.5;
+					etatime = ((float)target_press - (float)press) / barspermin + 0.5;
 				}
 				for (i = ETA_SAMPLES - 1; i > 0; i--) {
 					previous_press[i] = previous_press[i-1];
@@ -534,9 +573,11 @@ void loop() {
 			}
 			etatime2str(buf);
 			LCDStr(40, 3, buf, 0, 10);
+			Serial.println(buf);
 		} else {
 			time2str(buf, runtime * 10);
 			LCDStr(5, 5, buf, 0, 5);
+			Serial.println(buf);
 		}
 		disp_up_last = millis();
 	}
